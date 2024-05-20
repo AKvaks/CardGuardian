@@ -4,6 +4,7 @@
 @using System.Text
 @using System.Text.Encodings.Web
 @using CardGuardian.Domain.Entities
+@using CardGuardian.Domain.Enums
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
 
@@ -14,6 +15,8 @@
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@attribute [AllowAnonymous]
+
 
 <PageTitle>Register</PageTitle>
 
@@ -27,6 +30,21 @@
             <h2>Create a new account.</h2>
             <hr />
             <ValidationSummary class="text-danger" role="alert" />
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="Input.UserName" class="form-control" autocomplete="username" aria-required="true" />
+                <label for="username">Username</label>
+                <ValidationMessage For="() => Input.UserName" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="Input.FirstName" class="form-control" autocomplete="username" aria-required="true" />
+                <label for="firstName">First name</label>
+                <ValidationMessage For="() => Input.FirstName" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
+                <InputText @bind-Value="Input.LastName" class="form-control" autocomplete="username" aria-required="true" />
+                <label for="lastName">Last name</label>
+                <ValidationMessage For="() => Input.LastName" class="text-danger" />
+            </div>
             <div class="form-floating mb-3">
                 <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                 <label for="email">Email</label>
@@ -69,6 +87,11 @@
     {
         var user = CreateUser();
 
+        user.UserName = Input.UserName;
+        user.FirstName = Input.FirstName;
+        user.LastName = Input.LastName;
+        user.CountryOfResidenceId = 4;
+
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
         var emailStore = GetEmailStore();
         await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -81,6 +104,8 @@
         }
 
         Logger.LogInformation("User created a new account with password.");
+
+        await UserManager.AddToRoleAsync(user, ApplicationRoles.User.ToString().ToUpper()).ConfigureAwait(false);
 
         var userId = await UserManager.GetUserIdAsync(user);
         var code = await UserManager.GenerateEmailConfirmationTokenAsync(user);
@@ -130,6 +155,21 @@
         [EmailAddress]
         [Display(Name = "Email")]
         public string Email { get; set; } = "";
+
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+        [Display(Name = "Username")]
+        public string UserName { get; set; } = "";
+
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+        [Display(Name = "First name")]
+        public string FirstName { get; set; } = "";
+
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
+        [Display(Name = "Last name")]
+        public string LastName { get; set; } = "";
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
