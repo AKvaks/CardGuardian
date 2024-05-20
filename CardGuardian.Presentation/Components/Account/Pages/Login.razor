@@ -1,7 +1,9 @@
-﻿@page "/Account/Login"
+﻿@layout LoginLayout
+@page "/Account/Login"
 
 @using System.ComponentModel.DataAnnotations
 @using CardGuardian.Domain.Entities
+@using CardGuardian.Presentation.Components.Layout
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
 
@@ -42,7 +44,7 @@
                 <div>
                     <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
                 </div>
-                <div>
+@*                 <div>
                     <p>
                         <a href="Account/ForgotPassword">Forgot your password?</a>
                     </p>
@@ -52,17 +54,17 @@
                     <p>
                         <a href="Account/ResendEmailConfirmation">Resend email confirmation</a>
                     </p>
-                </div>
+                </div> *@
             </EditForm>
         </section>
     </div>
-    <div class="col-md-6 col-md-offset-2">
+@*     <div class="col-md-6 col-md-offset-2">
         <section>
             <h3>Use another service to log in.</h3>
             <hr />
             <ExternalLoginPicker />
         </section>
-    </div>
+    </div> *@
 </div>
 
 @code {

@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardGuardian.Domain", "CardGuardian.Domain\CardGuardian.Domain.csproj", "{B714CA0A-D465-4075-BEB6-990068673CCD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardGuardian.Domain", "CardGuardian.Domain\CardGuardian.Domain.csproj", "{B714CA0A-D465-4075-BEB6-990068673CCD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardGuardian.Application", "CardGuardian.Application\CardGuardian.Application.csproj", "{CB547035-4754-4C0D-B92F-DC34171181F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardGuardian.Application", "CardGuardian.Application\CardGuardian.Application.csproj", "{CB547035-4754-4C0D-B92F-DC34171181F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardGuardian.Infrastructure", "CardGuardian.Infrastructure\CardGuardian.Infrastructure.csproj", "{08295E7D-2479-40E6-9E4E-F85A30669673}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardGuardian.Infrastructure", "CardGuardian.Infrastructure\CardGuardian.Infrastructure.csproj", "{08295E7D-2479-40E6-9E4E-F85A30669673}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardGuardian.Presentation", "CardGuardian.Presentation\CardGuardian.Presentation.csproj", "{D40282EA-DB84-4411-BA84-6C11CC3AEB22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CardGuardian.Presentation", "CardGuardian.Presentation\CardGuardian.Presentation.csproj", "{D40282EA-DB84-4411-BA84-6C11CC3AEB22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
