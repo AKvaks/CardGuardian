@@ -144,44 +144,44 @@ static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
 static async Task SeedAdministrator(UserManager<ApplicationUser> userManager, ApplicationDbContext _dbContext)
 {
     const string email = "admin@cardguardian.com";
-    const string userName = "admin";
-    const string firstName = "AdminCG";
-    const string lastName = "AdminCG";
-    const string password = "AdminCgTest1234!";
-
-    int countryId = 0;
-    if (await _dbContext.Countries.AnyAsync(x => x.CountryCode == "HR"))
-    {
-        var countryCro = await _dbContext.Countries.FirstOrDefaultAsync(x => x.CountryCode == "HR").ConfigureAwait(false);
-        countryId = countryCro.Id;
-    }
-    else
-    {
-        var country = await _dbContext.Countries.FirstAsync();
-        countryId = country.Id;
-    }
-
-    var appUser = new ApplicationUser
-    {
-        Email = email,
-        UserName = userName,
-        FirstName = firstName,
-        LastName = lastName,
-        CountryOfResidenceId = countryId,
-        CreatedAt = DateTime.Now,
-        LastModifiedAt = DateTime.Now,
-        DeletedAt = null,
-        EmailConfirmed = true,
-    };
-
     if (await userManager.FindByEmailAsync(email).ConfigureAwait(false) == null)
     {
-        var result = await userManager.CreateAsync(appUser, password).ConfigureAwait(false);
+        const string userName = "admin";
+        const string firstName = "AdminCG";
+        const string lastName = "AdminCG";
+        const string password = "AdminCgTest1234!";
+
+        int countryId = 0;
+        if (await _dbContext.Countries.AnyAsync(x => x.CountryCode == "HR"))
+        {
+            var countryCro = await _dbContext.Countries.FirstOrDefaultAsync(x => x.CountryCode == "HR").ConfigureAwait(false);
+            var country = await _dbContext.Countries.FirstAsync();
+            countryId = countryCro != null ? countryCro.Id : country.Id;
+        }
+        else
+        {
+            var country = await _dbContext.Countries.FirstAsync();
+            countryId = country.Id;
+        }
+
+        var appAdmin = new ApplicationUser
+        {
+            Email = email,
+            UserName = userName,
+            FirstName = firstName,
+            LastName = lastName,
+            CountryOfResidenceId = countryId,
+            CreatedAt = DateTime.Now,
+            LastModifiedAt = DateTime.Now,
+            DeletedAt = null,
+        };
+
+        var result = await userManager.CreateAsync(appAdmin, password).ConfigureAwait(false);
         if (result.Succeeded)
         {
-            var token = await userManager.GenerateEmailConfirmationTokenAsync(appUser).ConfigureAwait(false);
-            await userManager.ConfirmEmailAsync(appUser, token).ConfigureAwait(false);
-            await userManager.AddToRoleAsync(appUser, ApplicationRoles.Admin.ToString().ToUpper()).ConfigureAwait(false);
+            var token = await userManager.GenerateEmailConfirmationTokenAsync(appAdmin).ConfigureAwait(false);
+            await userManager.ConfirmEmailAsync(appAdmin, token).ConfigureAwait(false);
+            await userManager.AddToRoleAsync(appAdmin, ApplicationRoles.Admin.ToString().ToUpper()).ConfigureAwait(false);
         }
     }
 }
