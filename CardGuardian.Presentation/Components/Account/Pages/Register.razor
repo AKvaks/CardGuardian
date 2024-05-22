@@ -7,6 +7,8 @@
 @using CardGuardian.Domain.Enums
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.WebUtilities
+@using CardGuardian.Application.Country.Queries.GetCountriesDropDown
+@using CardGuardian.Application.Country.Models
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
@@ -15,6 +17,7 @@
 @inject ILogger<Register> Logger
 @inject NavigationManager NavigationManager
 @inject IdentityRedirectManager RedirectManager
+@inject IMediator _mediator
 @attribute [AllowAnonymous]
 
 
@@ -46,6 +49,30 @@
                 <ValidationMessage For="() => Input.LastName" class="text-danger" />
             </div>
             <div class="form-floating mb-3">
+                <InputSelect @bind-Value="Input.CountryOfResidenceId">
+                    @if (Input.CountryOfResidenceId is 0)
+                    {
+                        <option selected value="" />
+                    }
+                    else
+                    {
+                        <option value="" />
+                    }
+                    @foreach (CountriesDropDownModel c in Countries)
+                    {
+                        @if (Input.CountryOfResidenceId == c.Id)
+                        {
+                            <option selected value="@c.Id">@c.CountryName</option>
+                        }
+                        else
+                        {
+                            <option value="@c.Id">@c.CountryName</option>
+                        }
+                    }
+                </InputSelect>
+                <ValidationMessage For="() => Input.LastName" class="text-danger" />
+            </div>
+            <div class="form-floating mb-3">
                 <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
                 <label for="email">Email</label>
                 <ValidationMessage For="() => Input.Email" class="text-danger" />
@@ -63,13 +90,6 @@
             <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
         </EditForm>
     </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            <ExternalLoginPicker />
-        </section>
-    </div>
 </div>
 
 @code {
@@ -83,6 +103,13 @@
 
     private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
 
+    private IEnumerable<CountriesDropDownModel> Countries = Enumerable.Empty<CountriesDropDownModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Countries = await _mediator.Send(new GetCountriesDropDownQuery());
+    }
+
     public async Task RegisterUser(EditContext editContext)
     {
         var user = CreateUser();
@@ -90,7 +117,7 @@
         user.UserName = Input.UserName;
         user.FirstName = Input.FirstName;
         user.LastName = Input.LastName;
-        user.CountryOfResidenceId = 4;
+        user.CountryOfResidenceId = Input.CountryOfResidenceId;
 
         await UserStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
         var emailStore = GetEmailStore();
@@ -170,6 +197,9 @@
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 2)]
         [Display(Name = "Last name")]
         public string LastName { get; set; } = "";
+
+        [Required]
+        public int CountryOfResidenceId { get; set; } = 0;
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
