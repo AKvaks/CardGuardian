@@ -1,4 +1,5 @@
-﻿@page "/Account/Register"
+﻿@layout LoginRegisterLayout
+@page "/Account/Register"
 
 @using System.ComponentModel.DataAnnotations
 @using System.Text
@@ -9,6 +10,7 @@
 @using Microsoft.AspNetCore.WebUtilities
 @using CardGuardian.Application.Country.Queries.GetCountriesDropDown
 @using CardGuardian.Application.Country.Models
+@using CardGuardian.Presentation.Components.Layout
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
@@ -23,40 +25,39 @@
 
 <PageTitle>Register</PageTitle>
 
-<h1>Register</h1>
 
-<div class="row">
-    <div class="col-md-4">
+
+<div class="d-flex align-items-center justify-content-center">
+    <div class="col-md-10">
+        <h1>Sign Up</h1>
         <StatusMessage Message="@Message" />
         <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
             <DataAnnotationsValidator />
-            <h2>Create a new account.</h2>
             <hr />
-            <ValidationSummary class="text-danger" role="alert" />
             <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.UserName" class="form-control" autocomplete="username" aria-required="true" />
-                <label for="username">Username</label>
+                <InputText @bind-Value="Input.UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="Username" />
+                <label for="UserName">Username</label>
                 <ValidationMessage For="() => Input.UserName" class="text-danger" />
             </div>
             <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.FirstName" class="form-control" autocomplete="username" aria-required="true" />
-                <label for="firstName">First name</label>
+                <InputText @bind-Value="Input.FirstName" class="form-control" autocomplete="given-name" aria-required="true" placeholder="First name" />
+                <label for="FirstName">First name</label>
                 <ValidationMessage For="() => Input.FirstName" class="text-danger" />
             </div>
             <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.LastName" class="form-control" autocomplete="username" aria-required="true" />
-                <label for="lastName">Last name</label>
+                <InputText @bind-Value="Input.LastName" class="form-control" autocomplete="family-name" aria-required="true" placeholder="Last name" />
+                <label for="LastName">Last name</label>
                 <ValidationMessage For="() => Input.LastName" class="text-danger" />
             </div>
             <div class="form-floating mb-3">
-                <InputSelect @bind-Value="Input.CountryOfResidenceId">
+                <InputSelect @bind-Value="Input.CountryOfResidenceId" class="form-control" autocomplete="country" aria-required="true">
                     @if (Input.CountryOfResidenceId is 0)
                     {
-                        <option selected value="" />
+                        <option selected value="0">-- Select a country --</option>
                     }
                     else
                     {
-                        <option value="" />
+                        <option value="0">-- Select a country --</option>
                     }
                     @foreach (CountriesDropDownModel c in Countries)
                     {
@@ -70,7 +71,8 @@
                         }
                     }
                 </InputSelect>
-                <ValidationMessage For="() => Input.LastName" class="text-danger" />
+                <label for="CountryOfResidenceId">Country</label>
+                <ValidationMessage For="() => Input.CountryOfResidenceId" class="text-danger" />
             </div>
             <div class="form-floating mb-3">
                 <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
@@ -87,7 +89,7 @@
                 <label for="confirm-password">Confirm Password</label>
                 <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
             </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+            <button type="submit" class="w-100 btn btn-lg btn-primary">Sign Up</button>
         </EditForm>
     </div>
 </div>
@@ -199,6 +201,7 @@
         public string LastName { get; set; } = "";
 
         [Required]
+        [Range(1, 999999, ErrorMessage = "Country must be selected")]
         public int CountryOfResidenceId { get; set; } = 0;
 
         [Required]
